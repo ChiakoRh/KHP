@@ -1,0 +1,25 @@
+{
+  "manifest_version": 3,
+  "name": "Monogatari Start Page",
+  "version": "1.1",
+  "description": "A dynamic Monogatari-themed new tab page with weather, search, and custom shortcuts.",
+  "author": "Monogatari Project",
+  "chrome_url_overrides": {
+    "newtab": "index.html"
+  },
+  "chrome_settings_overrides": {
+    "homepage": "index.html"
+  },
+  "permissions": ["storage"],
+  "host_permissions": ["https://api.open-meteo.com/*"],
+  "icons": {
+    "48": "hanekawa1.png",
+    "128": "hanekawa1.png"
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "monogatari-start-page@local.dev",
+      "strict_min_version": "109.0"
+    }
+  }
+}

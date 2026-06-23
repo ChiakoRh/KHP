@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Nadeko - Monogatari Start Page</title>
+    <link rel="manifest" href="../manifest.json" />
+    <meta name="theme-color" content="#fad4cf" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      :root {
+        --draw-mint: #9bcbb2;
+        --draw-mint-dark: #6fa689;
+        --draw-peach: #fad4cf;
+        --draw-white: #fcfcfc;
+        --draw-text: #596b61;
+        --ononoki-orange: #f08b53;
+        --ui-bg: rgba(252, 252, 252, 0.6);
+        --ui-blur: blur(8px);
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: "Outfit", sans-serif;
+        color: var(--draw-text);
+        height: 100vh;
+        overflow: hidden;
+        background-color: var(--draw-peach);
+        -webkit-font-smoothing: antialiased;
+      }
+
+      .media-layer {
+        position: fixed;
+        inset: 0;
+        z-index: -2;
+        background-image: url("../assets/images/nadeko.png");
+        background-size: cover;
+        background-position: center;
+      }
+
+      .media-layer video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        opacity: 0.9;
+        filter: brightness(85%) contrast(115%) saturate(105%);
+      }
+      .texture-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: -2;
+        pointer-events: none;
+        background: repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 1px,
+          rgba(0, 0, 0, 0.04) 2px,
+          rgba(0, 0, 0, 0.04) 4px
+        );
+      }
+
+      .edge-gradient {
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        background:
+          linear-gradient(
+            to bottom,
+            rgba(250, 212, 207, 0.4) 0%,
+            transparent 20%
+          ),
+          linear-gradient(to top, rgba(250, 212, 207, 0.5) 0%, transparent 30%),
+          radial-gradient(
+            circle at center,
+            transparent 40%,
+            rgba(89, 107, 97, 0.15) 100%
+          );
+        pointer-events: none;
+      }
+
+      .canvas-grid {
+        position: relative;
+        z-index: 10;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto 1fr auto;
+        height: 100%;
+        padding: 40px;
+        pointer-events: none;
+      }
+
+      .canvas-grid > * {
+        pointer-events: auto;
+      }
+
+      .info-corner {
+        grid-column: 2;
+        grid-row: 1;
+        justify-self: end;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 15px;
+      }
+
+      .time-module {
+        background: var(--ui-bg);
+        backdrop-filter: var(--ui-blur);
+        border: 2px dashed var(--draw-mint);
+        border-radius: 12px;
+        padding: 22px 33px;
+        text-align: right;
+        transition: border-color 0.3s;
+      }
+
+      .time-module:hover {
+        border-color: var(--ononoki-orange);
+      }
+
+      .time {
+        font-size: 62px;
+        font-weight: 300;
+        line-height: 1;
+        letter-spacing: -1px;
+        color: var(--draw-mint-dark);
+      }
+
+      .date {
+        font-size: 15px;
+        font-weight: 600;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        margin-top: 5px;
+      }
+
+      .weather-module {
+        background: var(--draw-white);
+        border-radius: 50px;
+        padding: 8px 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 600;
+        font-size: 16px;
+        box-shadow: 0 4px 15px rgba(111, 166, 137, 0.15);
+      }
+
+      .nav-corner {
+        grid-column: 1;
+        grid-row: 3;
+        align-self: end;
+      }
+
+      .links {
+        display: flex;
+        gap: 15px;
+      }
+
+      .link {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 20px;
+        background: var(--ui-bg);
+        backdrop-filter: var(--ui-blur);
+        border: 1px solid rgba(155, 203, 178, 0.4);
+        border-radius: 8px;
+        color: var(--draw-text);
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        transition: all 0.2s ease-out;
+      }
+
+      .link:hover {
+        background: var(--draw-white);
+        border-color: var(--draw-mint);
+        color: var(--draw-mint-dark);
+        transform: translateY(-4px);
+        box-shadow: 0 8px 20px rgba(111, 166, 137, 0.15);
+      }
+
+      .link:hover .icon {
+        stroke: var(--ononoki-orange);
+      }
+
+      .icon {
+        width: 18px;
+        height: 18px;
+        stroke: currentColor;
+        stroke-width: 2;
+        fill: none;
+        transition: stroke 0.2s;
+      }
+
+      .search-corner {
+        grid-column: 2;
+        grid-row: 3;
+        justify-self: end;
+        align-self: end;
+        width: 100%;
+        max-width: 350px;
+      }
+
+      .search-wrapper {
+        position: relative;
+        width: 100%;
+      }
+
+      .search {
+        width: 100%;
+        background: var(--ui-bg);
+        backdrop-filter: var(--ui-blur);
+        border: none;
+        border-bottom: 2px dashed var(--draw-mint);
+        padding: 15px 20px;
+        font-family: inherit;
+        font-size: 18px;
+        font-weight: 400;
+        color: var(--draw-text);
+        outline: none;
+        transition: all 0.3s ease;
+        border-radius: 8px 8px 0 0;
+      }
+
+      .search::placeholder {
+        color: rgba(89, 107, 97, 0.5);
+        font-weight: 300;
+      }
+
+      .search:focus {
+        background: var(--draw-white);
+        border-bottom: 2px solid var(--ononoki-orange);
+        box-shadow: 0 -4px 20px rgba(240, 139, 83, 0.1);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="media-layer">
+      <video autoplay loop muted playsinline id="bg-video">
+        <source src="../assets/videos/nadeko.mp4" type="video/mp4" />
+        <source src="../assets/videos/nadeko.mkv" type="video/x-matroska" />
+      </video>
+    </div>
+
+    <div class="edge-gradient"></div>
+
+    <div class="canvas-grid">
+      <div class="info-corner">
+        <div class="time-module">
+          <div class="time" id="clock">00:00</div>
+          <div class="date" id="date">Month 00, 0000</div>
+        </div>
+        <div class="weather-module" id="weather">
+          <span id="wx-temp">--°C</span>
+        </div>
+      </div>
+
+      <div class="nav-corner">
+        <nav class="links" id="links">
+          <a
+            class="link"
+            id="settings-btn"
+            style="
+              cursor: pointer;
+              padding-left: 12px;
+              padding-right: 12px;
+              justify-content: center;
+            "
+          >
+            <svg class="icon" viewBox="0 0 24 24" style="margin: 0">
+              <path
+                d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"
+              ></path>
+              <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+          </a>
+        </nav>
+      </div>
+
+      <div class="search-corner">
+        <div class="search-wrapper">
+          <input
+            id="search"
+            class="search"
+            type="search"
+            placeholder="Search..."
+            autocomplete="off"
+            autofocus
+          />
+        </div>
+      </div>
+    </div>
+
+    <script src="../js/core.js"></script>
+    <script src="../js/settings.js"></script>
+  </body>
+</html>

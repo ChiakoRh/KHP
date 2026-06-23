@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Ononoki - Monogatari Start Page</title>
+    <link rel="manifest" href="../manifest.json" />
+    <meta name="theme-color" content="#5be5b8" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      :root {
+        --yotsugi-mint: #5be5b8;
+        --yotsugi-orange: #ff6b35;
+        --yotsugi-dark: #121715;
+        --yotsugi-light: #e0f2eb;
+        --ui-border: 3px solid var(--yotsugi-dark);
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: "Space Mono", monospace;
+        color: var(--yotsugi-dark);
+        height: 100vh;
+        overflow: hidden;
+        background-color: var(--yotsugi-dark);
+        -webkit-font-smoothing: antialiased;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .media-layer {
+        position: fixed;
+        inset: 0;
+        z-index: -3;
+        background-image: url("../assets/images/ononoki.png");
+        background-size: cover;
+        background-position: center;
+      }
+
+      .media-layer video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .dot-grid {
+        position: fixed;
+        inset: 0;
+        z-index: -2;
+        background-image: radial-gradient(
+          var(--yotsugi-dark) 1.5px,
+          transparent 1.5px
+        );
+        background-size: 24px 24px;
+        opacity: 0.4;
+        pointer-events: none;
+      }
+
+      .ui-block {
+        position: relative;
+        z-index: 10;
+        background: var(--yotsugi-light);
+        border: var(--ui-border);
+        padding: 40px;
+        width: 100%;
+        max-width: 700px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 40px;
+        box-shadow: 12px 12px 0 var(--yotsugi-orange);
+      }
+
+      .data-panel {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        border-right: 3px dashed var(--yotsugi-mint);
+        padding-right: 40px;
+      }
+
+      .status-label {
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        color: var(--yotsugi-mint);
+        background: var(--yotsugi-dark);
+        padding: 4px 8px;
+        display: inline-block;
+        align-self: flex-start;
+        margin-bottom: 20px;
+      }
+
+      .time {
+        font-size: 56px;
+        font-weight: 700;
+        line-height: 1;
+        letter-spacing: -2px;
+        color: var(--yotsugi-dark);
+      }
+
+      .date {
+        font-size: 14px;
+        font-weight: 700;
+        margin-top: 10px;
+        color: var(--yotsugi-orange);
+      }
+
+      .weather {
+        margin-top: auto;
+        font-size: 24px;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .weather::before {
+        content: "";
+        display: block;
+        width: 16px;
+        height: 16px;
+        background: var(--yotsugi-orange);
+      }
+
+      .control-panel {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 30px;
+      }
+
+      .search-wrapper {
+        width: 100%;
+      }
+
+      .search {
+        width: 100%;
+        background: var(--yotsugi-light);
+        border: var(--ui-border);
+        padding: 16px;
+        font-family: inherit;
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--yotsugi-dark);
+        outline: none;
+        transition: none;
+      }
+
+      .search::placeholder {
+        color: #a0b8af;
+      }
+
+      .search:focus {
+        background: var(--yotsugi-mint);
+        color: var(--yotsugi-dark);
+      }
+
+      .search:focus::placeholder {
+        color: var(--yotsugi-dark);
+      }
+
+      .nav-links {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+
+      .link {
+        display: block;
+        padding: 12px;
+        background: var(--yotsugi-dark);
+        color: var(--yotsugi-mint);
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 700;
+        text-align: center;
+        text-transform: uppercase;
+        border: 2px solid var(--yotsugi-dark);
+      }
+
+      .link:hover {
+        background: var(--yotsugi-orange);
+        color: var(--yotsugi-dark);
+        border-color: var(--yotsugi-dark);
+      }
+
+      .barcode {
+        position: absolute;
+        bottom: 40px;
+        left: -20px;
+        transform: translateX(-100%) rotate(-90deg);
+        transform-origin: bottom right;
+        font-size: 12px;
+        letter-spacing: 4px;
+        color: var(--yotsugi-light);
+        background: var(--yotsugi-dark);
+        padding: 4px 12px;
+        font-weight: 700;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="media-layer">
+      <video autoplay loop muted playsinline id="bg-video">
+        <source src="../assets/videos/background.mp4" type="video/mp4" />
+        <source src="../assets/videos/background.mkv" type="video/x-matroska" />
+      </video>
+    </div>
+
+    <div class="dot-grid"></div>
+
+    <div class="ui-block">
+      <div class="barcode">SR-404-斧乃木 余接</div>
+      <div class="data-panel">
+        <div>
+          <div class="status-label">Online</div>
+          <div class="time" id="clock">00:00</div>
+          <div class="date" id="date">YYYY.MM.DD</div>
+        </div>
+        <div class="weather" id="weather">--°C</div>
+      </div>
+
+      <div class="control-panel">
+        <div class="search-wrapper">
+          <input
+            id="search"
+            class="search"
+            type="search"
+            placeholder="TYPE TO SEARCH.. "
+            autocomplete="off"
+            autofocus
+          />
+        </div>
+
+        <nav class="nav-links">
+          <a class="link" id="settings-btn" style="cursor: pointer">SETTINGS</a>
+        </nav>
+      </div>
+    </div>
+
+    <script src="../js/core.js"></script>
+    <script src="../js/settings.js"></script>
+  </body>
+</html>

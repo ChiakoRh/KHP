@@ -1,0 +1,363 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Shinobu - Monogatari Start Page</title>
+    <link rel="manifest" href="../manifest.json" />
+    <meta name="theme-color" content="#8a0303" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Nunito:wght@400;700;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      :root {
+        --accent-primary: #8a0303;
+        --accent-secondary: #d4af37;
+        --bg-color: #050505;
+        --text-color: #f8f6f0;
+        --bar-bg: rgba(5, 5, 5, 0.85);
+        --font-main: "Montserrat", sans-serif;
+        --font-display: "Playfair Display", serif;
+        --time-weight: 700;
+        --time-spacing: 2px;
+        --time-size: 64px;
+      }
+
+      html[data-theme="light"] {
+        --accent-primary: #e07a93;
+        --accent-secondary: #f4c055;
+        --bg-color: #faf5f5;
+        --text-color: #4a3b32;
+        --bar-bg: rgba(250, 245, 245, 0.85);
+        --font-main: "Nunito", sans-serif;
+        --font-display: "Nunito", sans-serif;
+        --time-weight: 900;
+        --time-spacing: 0px;
+        --time-size: 68px;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: var(--font-main);
+        color: var(--text-color);
+        height: 100vh;
+        overflow: hidden;
+        background-color: var(--bg-color);
+        -webkit-font-smoothing: antialiased;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+
+      .media-layer {
+        position: fixed;
+        inset: 0;
+        z-index: -3;
+        background-size: cover;
+        background-position: center;
+      }
+
+      #night-media {
+        background-image: url("../assets/images/kisshot.webp");
+      }
+
+      #day-media {
+        background-image: url("../assets/images/shinobu.png");
+      }
+
+      html[data-theme="light"] #night-media,
+      html[data-theme="light"] .vignette,
+      html[data-theme="light"] #ember-container {
+        display: none;
+      }
+
+      html:not([data-theme="light"]) #day-media,
+      html:not([data-theme="light"]) #sparkle-container {
+        display: none;
+      }
+
+      .vignette {
+        position: fixed;
+        inset: 0;
+        z-index: -2;
+        background: radial-gradient(
+          circle at center,
+          transparent 0%,
+          rgba(5, 5, 5, 0.7) 100%
+        );
+        pointer-events: none;
+      }
+
+      #ember-container,
+      #sparkle-container {
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        pointer-events: none;
+        overflow: hidden;
+      }
+
+      .ember {
+        position: absolute;
+        bottom: -10px;
+        background: var(--accent-primary);
+        border-radius: 50%;
+        opacity: 0;
+        filter: blur(1px);
+        animation: floatEmber linear infinite;
+      }
+
+      .sparkle {
+        position: absolute;
+        bottom: -10px;
+        background: var(--accent-secondary);
+        border-radius: 50%;
+        opacity: 0;
+        box-shadow: 0 0 8px var(--accent-secondary);
+        animation: floatSparkle linear infinite;
+      }
+
+      @keyframes floatEmber {
+        0% {
+          transform: translateY(0) scale(1);
+          opacity: 0;
+        }
+        20% {
+          opacity: 0.8;
+        }
+        80% {
+          opacity: 0.5;
+        }
+        100% {
+          transform: translateY(-100vh) scale(0.2);
+          opacity: 0;
+        }
+      }
+
+      @keyframes floatSparkle {
+        0% {
+          transform: translateY(0) scale(0.5);
+          opacity: 0;
+        }
+        20% {
+          opacity: 0.9;
+        }
+        80% {
+          opacity: 0.6;
+        }
+        100% {
+          transform: translateY(-100vh) scale(1.5);
+          opacity: 0;
+        }
+      }
+
+      .cinematic-bar {
+        position: relative;
+        z-index: 10;
+        width: 100%;
+        height: 120px;
+        background: var(--bar-bg);
+        backdrop-filter: blur(10px);
+        display: flex;
+        align-items: center;
+        padding: 0 60px;
+        transition:
+          background 0.3s ease,
+          border-color 0.3s ease;
+      }
+
+      .cinematic-bar.top {
+        justify-content: space-between;
+        border-bottom: 1px solid var(--accent-secondary);
+      }
+
+      .cinematic-bar.bottom {
+        justify-content: space-between;
+        border-top: 1px solid var(--accent-primary);
+      }
+
+      .time-module {
+        display: flex;
+        align-items: baseline;
+        gap: 15px;
+      }
+
+      .time {
+        font-family: var(--font-display);
+        font-size: var(--time-size);
+        font-weight: var(--time-weight);
+        letter-spacing: var(--time-spacing);
+        color: var(--text-color);
+        transition: color 0.3s ease;
+      }
+
+      .date {
+        font-size: 14px;
+        font-weight: 700;
+        letter-spacing: 4px;
+        text-transform: uppercase;
+        color: var(--accent-secondary);
+        transition: color 0.3s ease;
+      }
+
+      .weather-module {
+        font-family: var(--font-display);
+        font-size: 28px;
+        font-style: italic;
+        color: var(--text-color);
+        letter-spacing: 1px;
+        font-weight: var(--time-weight);
+        transition: color 0.3s ease;
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 40px;
+      }
+
+      .link {
+        color: var(--text-color);
+        text-decoration: none;
+        font-size: 15px;
+        font-weight: 700;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        position: relative;
+        padding: 10px 0;
+        transition: color 0.4s ease;
+      }
+
+      .link::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        width: 0;
+        height: 2px;
+        background: var(--accent-primary);
+        transition: all 0.4s ease;
+        transform: translateX(-50%);
+      }
+
+      .link:hover {
+        color: var(--accent-secondary);
+      }
+
+      .link:hover::after {
+        width: 100%;
+        background: var(--accent-secondary);
+      }
+
+      .search-wrapper {
+        position: relative;
+        width: 300px;
+      }
+
+      .search {
+        width: 100%;
+        background: transparent;
+        border: none;
+        border-bottom: 2px solid var(--text-color);
+        opacity: 0.5;
+        padding: 10px 0;
+        font-family: var(--font-main);
+        font-size: 16px;
+        font-weight: 700;
+        letter-spacing: 2px;
+        color: var(--text-color);
+        outline: none;
+        transition: all 0.4s ease;
+      }
+
+      #settings-shell {
+        display: contents;
+      }
+
+      .search::placeholder {
+        color: var(--text-color);
+        text-transform: uppercase;
+      }
+
+      .search:focus {
+        border-bottom-color: var(--accent-primary);
+        color: var(--accent-secondary);
+        opacity: 1;
+      }
+    </style>
+    <script src="../js/theme-init.js"></script>
+  </head>
+  <body>
+    <div id="night-media" class="media-layer"></div>
+    <div id="day-media" class="media-layer"></div>
+
+    <div class="vignette"></div>
+    <div id="ember-container"></div>
+    <div id="sparkle-container"></div>
+
+    <div class="cinematic-bar top">
+      <div class="time-module">
+        <div class="time" id="clock">00:00</div>
+        <div class="date" id="date">YYYY.MM.DD</div>
+      </div>
+      <div class="weather-module" id="weather">--°C</div>
+    </div>
+
+    <div class="cinematic-bar bottom">
+      <nav class="nav-links" id="links"></nav>
+
+      <div style="display: flex; align-items: center; gap: 20px">
+        <div class="search-wrapper">
+          <input
+            id="search"
+            class="search"
+            type="search"
+            placeholder="Search..."
+            autocomplete="off"
+            autofocus
+          />
+        </div>
+        <button
+          id="settings-btn"
+          style="
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            color: var(--text-color);
+            transition: color 0.4s ease;
+          "
+        >
+          <svg
+            viewBox="0 0 24 24"
+            style="
+              width: 24px;
+              height: 24px;
+              fill: none;
+              stroke: currentColor;
+              stroke-width: 2;
+              stroke-linecap: round;
+              stroke-linejoin: round;
+            "
+          >
+            <path
+              d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"
+            ></path>
+            <circle cx="12" cy="12" r="3"></circle>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <script src="../js/core.js"></script>
+    <script src="../js/settings.js"></script>
+    <script src="../js/shinobu.js"></script>
+  </body>
+</html>

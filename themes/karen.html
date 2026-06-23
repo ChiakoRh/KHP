@@ -1,0 +1,402 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Karen - Monogatari Start Page</title>
+    <link rel="manifest" href="../manifest.json" />
+    <meta name="theme-color" content="#f9d800" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@700;900&family=Space+Grotesk:wght@500;700;900&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      :root {
+        --k-bg: #111111;
+        --k-panel: #1a1a1a;
+        --k-text: #eeeeee;
+        --k-yellow: #f9d800;
+        --k-red: #cc0000;
+        --k-search-bg: rgba(26, 26, 26, 0.8);
+        --k-search-focus: rgba(40, 40, 40, 0.9);
+        --k-honeycomb-color: #f9d800;
+        --k-honeycomb-opacity: 0.15;
+        --action-clip: polygon(15% 0%, 100% 0%, 85% 100%, 0% 100%);
+      }
+
+      [data-theme="light"] {
+        --k-bg: #f4f4f4;
+        --k-panel: #e5e5e5;
+        --k-text: #111111;
+        --k-yellow: #e6b800;
+        --k-red: #d10000;
+        --k-search-bg: rgba(225, 225, 225, 0.8);
+        --k-search-focus: rgba(255, 255, 255, 0.9);
+        --k-honeycomb-color: #000000;
+        --k-honeycomb-opacity: 0.1;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: "Space Grotesk", sans-serif;
+        background-color: var(--k-bg);
+        color: var(--k-text);
+        height: 100vh;
+        overflow: hidden;
+        -webkit-font-smoothing: antialiased;
+        transition:
+          background-color 0.3s ease,
+          color 0.3s ease;
+      }
+
+      .honeycomb-bg {
+        position: fixed;
+        inset: 0;
+        z-index: -2;
+        background-color: var(--k-honeycomb-color);
+        opacity: var(--k-honeycomb-opacity);
+        mask-image: url("data:image/svg+xml,%3Csvg width='56' height='100' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 56 100'%3E%3Cpath fill='none' stroke='%23ffffff' stroke-width='2' d='M28 66L0 50V16l28-16 28 16v34L28 66zm0 34V66M0 50l-28 16v34l28 16 28-16v-34L0 50z'/%3E%3C/svg%3E");
+        -webkit-mask-image: url("data:image/svg+xml,%3Csvg width='56' height='100' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 56 100'%3E%3Cpath fill='none' stroke='%23ffffff' stroke-width='2' d='M28 66L0 50V16l28-16 28 16v34L28 66zm0 34V66M0 50l-28 16v34l28 16 28-16v-34L0 50z'/%3E%3C/svg%3E");
+        transition:
+          background-color 0.3s ease,
+          opacity 0.3s ease;
+      }
+
+      .vignette {
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        background: radial-gradient(
+          circle at 30% 50%,
+          transparent 0%,
+          var(--k-bg) 120%
+        );
+        pointer-events: none;
+        transition: background 0.3s ease;
+      }
+
+      .layout {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        height: 100%;
+        max-width: 1600px;
+        margin: 0 auto;
+        padding: 40px;
+        align-items: center;
+        gap: 40px;
+      }
+
+      .hud-panel {
+        display: flex;
+        flex-direction: column;
+        gap: 32px;
+        padding-left: 40px;
+      }
+
+      .arc-title {
+        font-family: "Noto Sans JP", sans-serif;
+        color: var(--k-yellow);
+        font-size: 16px;
+        font-weight: 900;
+        letter-spacing: 4px;
+        transition: color 0.3s ease;
+      }
+
+      .clock-container {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .time {
+        font-size: clamp(80px, 8vw, 130px);
+        font-weight: 900;
+        line-height: 0.85;
+        letter-spacing: -2px;
+        color: var(--k-text);
+        transition: color 0.3s ease;
+      }
+
+      .date-wx-row {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        margin-top: 12px;
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--k-yellow);
+      }
+
+      .greeting {
+        background: var(--k-text);
+        color: var(--k-bg);
+        padding: 4px 12px;
+        font-size: 14px;
+        font-weight: 900;
+        text-transform: uppercase;
+        clip-path: polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
+        transition:
+          background 0.3s ease,
+          color 0.3s ease;
+      }
+
+      .search-wrapper {
+        position: relative;
+        width: 100%;
+        max-width: 480px;
+      }
+
+      .search {
+        width: 100%;
+        background: var(--k-search-bg);
+        border: none;
+        border-left: 4px solid var(--k-yellow);
+        color: var(--k-text);
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 20px;
+        font-weight: 500;
+        padding: 16px 20px;
+        outline: none;
+        backdrop-filter: blur(4px);
+        transition: all 0.2s ease;
+        clip-path: polygon(0 0, 100% 0, calc(100% - 15px) 100%, 0 100%);
+      }
+
+      .search::placeholder {
+        color: #888;
+      }
+
+      .search:focus {
+        border-left-color: var(--k-red);
+        background: var(--k-search-focus);
+      }
+
+      .links-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        max-width: 480px;
+      }
+
+      .link {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: var(--k-panel);
+        color: var(--k-text);
+        padding: 12px 20px;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        clip-path: polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
+        transition: all 0.15s ease-out;
+      }
+
+      .link svg {
+        width: 18px;
+        height: 18px;
+        stroke: var(--k-yellow);
+        stroke-width: 2.5;
+        fill: none;
+        transition: stroke 0.15s ease-out;
+      }
+
+      .link:hover {
+        background: var(--k-yellow);
+        color: var(--k-bg);
+        transform: translateY(-2px);
+      }
+
+      .link:hover svg {
+        stroke: var(--k-bg);
+      }
+
+      .hero-container {
+        position: relative;
+        width: 100%;
+        height: 80vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .action-frame {
+        position: absolute;
+        width: 680px;
+        height: 520px;
+        background: var(--k-yellow);
+        clip-path: var(--action-clip);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1;
+        transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      }
+
+      .action-mask {
+        width: calc(100% - 12px);
+        height: calc(100% - 12px);
+        background: var(--k-bg);
+        clip-path: var(--action-clip);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .karen-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+        transition:
+          transform 0.5s cubic-bezier(0.2, 0, 0, 1),
+          opacity 0.3s ease;
+        transform: scale(1.05);
+      }
+
+      .cycle-out .action-frame {
+        transform: scale(0.9) rotate(-3deg);
+      }
+      .cycle-out .karen-image {
+        opacity: 0;
+        transform: scale(1.2);
+      }
+
+      .cycle-in .action-frame {
+        transform: scale(1) rotate(0deg);
+      }
+      .cycle-in .karen-image {
+        opacity: 1;
+        transform: scale(1.05);
+      }
+
+      .hero-container::before {
+        content: "";
+        position: absolute;
+        width: 680px;
+        height: 520px;
+        border: 4px solid var(--k-red);
+        clip-path: var(--action-clip);
+        transform: translate(-15px, 15px);
+        opacity: 0.6;
+        z-index: 0;
+      }
+
+      .settings-btn {
+        position: fixed;
+        bottom: 40px;
+        right: 40px;
+        width: 60px;
+        height: 60px;
+        background: var(--k-panel);
+        border: none;
+        cursor: pointer;
+        z-index: 100;
+        clip-path: polygon(15% 0, 100% 0, 85% 100%, 0 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+      }
+
+      .settings-btn svg {
+        width: 24px;
+        height: 24px;
+        stroke: var(--k-text);
+        stroke-width: 2;
+        fill: none;
+        transition:
+          stroke 0.2s,
+          transform 0.4s ease;
+      }
+
+      .settings-btn:hover {
+        background: var(--k-yellow);
+        transform: scale(1.1);
+      }
+
+      .settings-btn:hover svg {
+        stroke: var(--k-bg);
+        transform: rotate(90deg);
+      }
+
+      @media (max-width: 1200px) {
+        .layout {
+          grid-template-columns: 1fr;
+          grid-template-rows: auto 1fr;
+          gap: 20px;
+        }
+        .action-frame,
+        .hero-container::before {
+          width: 480px;
+          height: 380px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="honeycomb-bg"></div>
+    <div class="vignette"></div>
+
+    <div class="layout">
+      <div class="hud-panel">
+        <div class="arc-title">かれんビー</div>
+
+        <div class="clock-container">
+          <div class="time" id="clock">00:00</div>
+          <div class="date-wx-row">
+            <span class="greeting" id="greeting">Welcome</span>
+            <span id="date">YYYY.MM.DD</span>
+            <span id="weather">--°C</span>
+          </div>
+        </div>
+
+        <div class="search-wrapper">
+          <input
+            id="search"
+            class="search"
+            type="search"
+            placeholder="Search network..."
+            autocomplete="off"
+            autofocus
+          />
+        </div>
+
+        <nav class="links-grid" id="links"></nav>
+      </div>
+
+      <div class="hero-container" id="hero-wrapper">
+        <div class="action-frame">
+          <div class="action-mask">
+            <img
+              id="karen-visual"
+              class="karen-image"
+              src=""
+              alt="Karen Araragi"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button class="settings-btn" aria-label="Settings">
+      <svg viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="3"></circle>
+        <path
+          d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"
+        ></path>
+      </svg>
+    </button>
+
+    <script src="../js/core.js"></script>
+    <script src="../js/settings.js"></script>
+  </body>
+</html>

@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Black Hanekawa - Monogatari Start Page</title>
+    <link rel="manifest" href="../manifest.json" />
+    <meta name="theme-color" content="#030303" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,700;1,400&family=Space+Grotesk:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      :root {
+        --void: #030303;
+        --silver: #e2e8f0;
+        --gold: #ffbe0b;
+        --gold-dim: rgba(255, 190, 11, 0.3);
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: "Space Grotesk", sans-serif;
+        background-color: var(--void);
+        color: var(--silver);
+        height: 100vh;
+        overflow: hidden;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      .media-layer {
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        background-image: url("../assets/images/black_hanekawa.gif");
+        background-size: cover;
+        background-position: center;
+      }
+
+      .media-layer video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: grayscale(0.3) contrast(1.2);
+      }
+
+      .frame-cut {
+        position: fixed;
+        inset: 0;
+        background: var(--void);
+        z-index: 9999;
+        pointer-events: none;
+        animation: shaftBlink 0.6s cubic-bezier(0.8, 0, 0.2, 1) forwards;
+      }
+
+      @keyframes shaftBlink {
+        0% { opacity: 1; }
+        40% { opacity: 1; background: var(--silver); }
+        45% { opacity: 0; }
+        50% { opacity: 1; background: var(--void); }
+        100% { opacity: 0; display: none; }
+      }
+
+      .letterbox {
+        position: fixed;
+        left: 0;
+        right: 0;
+        z-index: 10;
+        background: var(--void);
+        height: 80px;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        padding: 0 50px;
+      }
+
+      .letterbox.top {
+        top: 0;
+        justify-content: space-between;
+        border-bottom: 1px solid var(--gold-dim);
+      }
+
+      .letterbox.bottom {
+        bottom: 0;
+        justify-content: center;
+        border-top: 1px solid var(--gold-dim);
+      }
+
+      .time-container {
+        display: flex;
+        align-items: baseline;
+        gap: 20px;
+      }
+
+      .time {
+        font-family: "Cormorant Garamond", serif;
+        font-size: 56px;
+        font-weight: 700;
+        color: var(--silver);
+        line-height: 1;
+        letter-spacing: -1px;
+      }
+
+      .date {
+        font-size: 14px;
+        font-weight: 700;
+        letter-spacing: 4px;
+        text-transform: uppercase;
+        color: var(--gold);
+      }
+
+      .search-container {
+        position: relative;
+        display: flex;
+        align-items: center;
+      }
+
+      .search-input {
+        background: rgba(3, 3, 3, 0.8);
+        border: 1px solid var(--gold-dim);
+        border-bottom: 2px solid var(--gold);
+        color: var(--silver);
+        padding: 12px 45px 12px 20px;
+        width: 320px;
+        font-family: inherit;
+        font-weight: 700;
+        font-size: 14px;
+        letter-spacing: 2px;
+        outline: none;
+        text-transform: uppercase;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .search-input::placeholder {
+        color: rgba(226, 232, 240, 0.3);
+      }
+
+      .search-input:focus {
+        background: #f3e7da66;
+        color: var(--void);
+        border-color: var(--gold);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
+      }
+
+      .search-input:focus::placeholder {
+        color: rgba(3, 3, 3, 0.4);
+      }
+
+      .paw-icon {
+        position: absolute;
+        right: 15px;
+        width: 20px;
+        height: 20px;
+        fill: var(--gold-dim);
+        pointer-events: none;
+        transition: fill 0.2s;
+      }
+
+      .search-input:focus ~ .paw-icon {
+        fill: var(--void);
+      }
+
+      .weather {
+        position: absolute;
+        left: 50px;
+        font-family: "Cormorant Garamond", serif;
+        font-size: 28px;
+        font-style: italic;
+        color: var(--silver);
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 60px;
+      }
+
+      .link {
+        position: relative;
+        color: var(--silver);
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        padding: 10px 0;
+        overflow: hidden;
+      }
+
+      .link::before {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background: var(--gold);
+        transform: scaleY(1);
+        transform-origin: bottom;
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: -1;
+      }
+
+      .link:hover {
+        color: var(--void);
+      }
+
+      .link:hover::before {
+        transform: scaleY(20);
+      }
+
+      .settings-btn {
+        position: fixed;
+        bottom: 9px;
+        right: 20px;
+        width: 44px;
+        height: 44px;
+        cursor: pointer;
+        z-index: 10000;
+        background: transparent;
+        border: none;
+        padding: 0;
+        opacity: 0.5;
+        transition: opacity 0.3s;
+      }
+      .settings-btn:hover {
+        opacity: 1;
+      }
+      .settings-btn svg {
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="frame-cut"></div>
+
+    <div class="media-layer">
+      <video autoplay loop muted playsinline id="bg-video">
+        <source src="../assets/videos/hanekawa.mp4" type="video/mp4" />
+        <source src="../assets/videos/hanekawa.mkv" type="video/x-matroska" />
+      </video>
+    </div>
+
+    <div class="letterbox top">
+      <div class="time-container">
+        <div class="time" id="clock">00:00</div>
+        <div class="date" id="date">YYYY.MM.DD</div>
+      </div>
+
+      <div class="search-container">
+        <input
+          id="search"
+          class="search-input"
+          type="search"
+          placeholder="SEARCH"
+          autocomplete="off"
+          autofocus
+        />
+        <svg class="paw-icon" viewBox="0 0 24 24">
+          <polygon points="12,13 17,17 14,22 10,22 7,17" />
+          <polygon points="12,4 14,7 12,10 10,7" />
+          <polygon points="6,6 8,9 5,11 3,8" />
+          <polygon points="18,6 21,8 19,11 16,9" />
+        </svg>
+      </div>
+    </div>
+
+    <div class="letterbox bottom">
+      <div class="weather" id="weather">--°C</div>
+      <nav class="nav-links" id="links"></nav>
+    </div>
+
+    <button class="settings-btn" aria-label="Settings" id="settings-btn">
+      <svg width="100%" viewBox="0 0 24 30.75" fill="none" xmlns="http://www.w3.org/2000/svg" role="img">
+        <title>Settings</title>
+        <path d="M19.9801 9.0625L20.7301 9.06545V9.0625H19.9801ZM4.01995 9.0625H3.26994L3.26995 9.06545L4.01995 9.0625ZM19.0993 10.6602L18.5268 11.1447L18.6114 11.2447L18.725 11.3101L19.0993 10.6602ZM18.8279 9.39546C18.494 9.15031 18.0246 9.22224 17.7795 9.55611C17.5343 9.88999 17.6063 10.3594 17.9401 10.6045L18.8279 9.39546ZM4.01994 15L3.26994 15V15H4.01994ZM6.05987 10.6045C6.39375 10.3594 6.46568 9.88999 6.22053 9.55612C5.97538 9.22224 5.50598 9.15031 5.1721 9.39546L6.05987 10.6045ZM12 5.65636C11.2279 5.65636 10.7904 5.69743 10.4437 5.74003C10.1041 5.78176 9.93161 5.8125 9.60601 5.8125V7.3125C10.0465 7.3125 10.3308 7.26518 10.6266 7.22883C10.9153 7.19336 11.2918 7.15636 12 7.15636V5.65636ZM12 7.15636C12.7083 7.15636 13.0847 7.19336 13.3734 7.22883C13.6692 7.26518 13.9536 7.3125 14.394 7.3125V5.8125C14.0684 5.8125 13.896 5.78176 13.5563 5.74003C13.2097 5.69743 12.7721 5.65636 12 5.65636V7.15636ZM14.394 7.3125C14.6069 7.3125 14.8057 7.25192 14.9494 7.19867C15.1051 7.14099 15.2662 7.06473 15.4208 6.98509C15.7257 6.82803 16.0797 6.61814 16.4042 6.43125C16.7431 6.23612 17.064 6.0575 17.3512 5.92771C17.6589 5.78868 17.8349 5.75011 17.9053 5.75011V4.25011C17.4968 4.25011 17.0743 4.40685 16.7336 4.56076C16.3725 4.72392 15.9951 4.9359 15.6557 5.13136C15.3019 5.33508 14.9976 5.51578 14.7338 5.65167C14.6041 5.7185 14.5034 5.7643 14.4284 5.79206C14.3415 5.82426 14.3408 5.8125 14.394 5.8125V7.3125ZM17.9053 5.75011C18.2495 5.75011 18.58 5.85266 18.8122 6.0527C19.0237 6.23486 19.2301 6.56231 19.2301 7.18761H20.7301C20.7301 6.18792 20.3778 5.42162 19.7913 4.91628C19.2255 4.42882 18.5186 4.25011 17.9053 4.25011V5.75011ZM19.2301 7.18761V9.0625H20.7301V7.18761H19.2301ZM9.60601 5.8125C9.65925 5.8125 9.65855 5.82426 9.57164 5.79206C9.49668 5.7643 9.39595 5.71849 9.26624 5.65166C9.00249 5.51576 8.69813 5.33504 8.34437 5.13132C8.00493 4.93584 7.62754 4.72384 7.26643 4.56067C6.92577 4.40675 6.5032 4.25 6.09476 4.25V5.75C6.16512 5.75 6.34105 5.78856 6.64878 5.92761C6.93605 6.05741 7.25693 6.23603 7.5958 6.43118C7.92035 6.61808 8.27434 6.82799 8.57919 6.98506C8.73377 7.06471 8.89488 7.14098 9.05059 7.19866C9.19436 7.25191 9.39317 7.3125 9.60601 7.3125V5.8125ZM6.09476 4.25C5.48139 4.25 4.77453 4.42871 4.20872 4.91616C3.62216 5.4215 3.26995 6.18781 3.26995 7.1875H4.76995C4.76995 6.56219 4.97634 6.23475 5.18778 6.05259C5.41998 5.85254 5.75053 5.75 6.09476 5.75V4.25ZM3.26995 7.1875V9.0625H4.76995V7.1875H3.26995ZM12 20.75C13.431 20.75 15.5401 20.4654 17.3209 19.6462C19.1035 18.8262 20.7301 17.3734 20.7301 15H19.2301C19.2301 16.5328 18.2232 17.58 16.694 18.2835C15.1631 18.9877 13.2822 19.25 12 19.25V20.75ZM19.6719 10.1758C19.437 9.89818 19.1575 9.63749 18.8279 9.39546L17.9401 10.6045C18.1808 10.7813 18.3726 10.9625 18.5268 11.1447L19.6719 10.1758ZM19.2301 9.05955C19.2293 9.25778 19.1888 9.67007 19.0916 9.95501C19.0374 10.1139 19.0062 10.1101 19.0627 10.0649C19.1075 10.0289 19.1902 9.98403 19.3002 9.97847C19.4051 9.97317 19.468 10.007 19.4737 10.0103L18.725 11.3101C18.9057 11.4142 19.1272 11.4891 19.3759 11.4766C19.6297 11.4637 19.8412 11.3633 20.0013 11.2349C20.2881 11.0048 20.4331 10.6686 20.5113 10.4392C20.679 9.94758 20.7289 9.35941 20.7301 9.06545L19.2301 9.05955ZM12 19.25C10.7178 19.25 8.83685 18.9877 7.30594 18.2835C5.7768 17.5801 4.76994 16.5328 4.76994 15H3.26994C3.26994 17.3734 4.89649 18.8262 6.67907 19.6462C8.45988 20.4654 10.5689 20.75 12 20.75V19.25ZM4.76994 15C4.76994 14.2119 4.71349 13.5629 4.7889 12.8724C4.85939 12.227 5.04214 11.6541 5.47321 11.1447L4.32811 10.1758C3.64728 10.9804 3.38966 11.8682 3.29777 12.7095C3.2108 13.5058 3.26994 14.3696 3.26994 15L4.76994 15ZM5.47321 11.1447C5.62738 10.9625 5.81916 10.7813 6.05987 10.6045L5.1721 9.39546C4.84248 9.63749 4.56299 9.89818 4.32811 10.1758L5.47321 11.1447ZM3.26995 9.06545C3.27111 9.35941 3.32101 9.94757 3.48871 10.4392C3.56694 10.6686 3.71186 11.0048 3.99873 11.2349C4.15878 11.3633 4.3703 11.4637 4.62412 11.4766C4.87277 11.4891 5.0943 11.4142 5.27501 11.3101L4.52631 10.0103C4.53204 10.007 4.59487 9.97317 4.69976 9.97847C4.80981 9.98403 4.89252 10.0289 4.93734 10.0649C4.99376 10.1101 4.96261 10.1139 4.9084 9.95501C4.81121 9.67007 4.77072 9.25778 4.76994 9.05955L3.26995 9.06545Z"
+          fill="#ffbe0b" opacity="0.45"/>
+        <g transform="translate(12 13) scale(1.45) translate(-12 -13)">
+          <path d="M14.14,12.49 L14.96,12.53 L14.96,13.47 L14.14,13.51 L13.88,14.15 L14.43,14.76 L13.76,15.43 L13.15,14.88 L12.51,15.14 L12.47,15.96 L11.53,15.96 L11.49,15.14 L10.85,14.88 L10.24,15.43 L9.57,14.76 L10.12,14.15 L9.86,13.51 L9.04,13.47 L9.04,12.53 L9.86,12.49 L10.12,11.85 L9.57,11.24 L10.24,10.57 L10.85,11.12 L11.49,10.86 L11.53,10.04 L12.47,10.04 L12.51,10.86 L13.15,11.12 L13.76,10.57 L14.43,11.24 L13.88,11.85 Z"
+            fill="#ffbe0b" opacity="0.7"/>
+        </g>
+        <path d="M22.0004 15.4688C21.5165 15.1562 19.4197 14.375 18.6133 14.375" stroke="#ffbe0b" strokeWidth="0.6" strokeLinecap="round"/>
+        <path d="M20.3871 17.9688C19.9033 17.6562 18.7742 16.875 17.9678 16.875" stroke="#ffbe0b" strokeWidth="0.6" strokeLinecap="round"/>
+        <path d="M2 15.4688C2.48387 15.1562 4.58065 14.375 5.3871 14.375" stroke="#ffbe0b" strokeWidth="0.6" strokeLinecap="round"/>
+        <path d="M3.61279 17.9688C4.09667 17.6562 5.2257 16.875 6.03215 16.875" stroke="#ffbe0b" strokeWidth="0.6" strokeLinecap="round"/>
+      </svg>
+    </button>
+
+    <script src="../js/core.js"></script>
+    <script src="../js/settings.js"></script>
+  </body>
+</html>

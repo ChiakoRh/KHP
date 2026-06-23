@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sodachi - Monogatari Start Page</title>
+    <link rel="manifest" href="../manifest.json" />
+    <meta name="theme-color" content="#6b7c8a" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css"
+    />
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"
+    ></script>
+
+    <style>
+      :root {
+        --bg-base: #ffffff;
+        --fg-base: #111111;
+        --grid-line: rgba(0, 0, 0, 0.05);
+        --grid-major: rgba(0, 0, 0, 0.15);
+        --accent-color: #6b7c8a;
+        --char-img: url("../assets/images/sodachi_trn.png");
+      }
+
+      html[data-theme="dark"] {
+        --bg-base: #000000;
+        --fg-base: #e0e0e0;
+        --grid-line: rgba(255, 255, 255, 0.05);
+        --grid-major: rgba(255, 255, 255, 0.2);
+        --accent-color: #8ca2b5;
+        --char-img: url("../assets/images/sodachi_trn.png");
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        transition: none !important;
+      }
+
+      body {
+        background-color: var(--bg-base);
+        color: var(--fg-base);
+        font-family: "Fira Code", monospace;
+        height: 100vh;
+        width: 100vw;
+        overflow: hidden;
+        background-size: 40px 40px;
+        background-image:
+          linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+          linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+        position: relative;
+      }
+
+      body::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-size: 200px 200px;
+        background-image:
+          linear-gradient(to right, var(--grid-major) 1px, transparent 1px),
+          linear-gradient(to bottom, var(--grid-major) 1px, transparent 1px);
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      .equation-loop-container {
+        position: absolute;
+        top: 2rem;
+        right: 2vw;
+        z-index: 5;
+        pointer-events: none;
+        user-select: none;
+        color: var(--fg-base);
+        text-align: right;
+        height: 12vh;
+        width: 40vw;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+      }
+
+      #equation-loop {
+        font-size: 0.65rem;
+        opacity: 0;
+        filter: blur(4px);
+        transition:
+          opacity 0.8s ease,
+          filter 0.8s ease !important;
+      }
+
+      .character-layer {
+        position: absolute;
+        top: calc(15vh + 1rem);
+        right: 0;
+        width: 55vw;
+        height: 80vh;
+        background-image: var(--char-img);
+        background-size: contain;
+        background-position: top right;
+        background-repeat: no-repeat;
+        z-index: 1;
+        pointer-events: none;
+        opacity: 0.95;
+      }
+
+      .ui-layer {
+        position: absolute;
+        inset: 0;
+        z-index: 10;
+        display: grid;
+        grid-template-columns: repeat(12, 1fr);
+        grid-template-rows: repeat(12, 1fr);
+        pointer-events: none;
+      }
+
+      .interactive-zone {
+        pointer-events: auto;
+      }
+
+      .metrics-cluster {
+        grid-column: 2 / 6;
+        grid-row: 3 / 6;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+
+      #greeting {
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        opacity: 0.7;
+        margin-bottom: 1rem;
+      }
+
+      #clock {
+        font-size: clamp(4rem, 7vw, 8rem);
+        font-weight: 700;
+        line-height: 0.9;
+        letter-spacing: -5px;
+        margin-bottom: 1rem;
+      }
+
+      .data-vector {
+        display: flex;
+        gap: 3rem;
+        font-size: 1rem;
+        border-left: 2px solid var(--accent-color);
+        padding-left: 1rem;
+      }
+
+      .data-label {
+        font-size: 0.65rem;
+        opacity: 0.5;
+        margin-bottom: 4px;
+        text-transform: uppercase;
+      }
+
+      .query-module {
+        grid-column: 2 / 5;
+        grid-row: 7 / 8;
+        display: flex;
+        align-items: center;
+        background: var(--bg-base);
+        border: 1px solid var(--grid-major);
+        box-shadow: 4px 4px 0 var(--fg-base);
+      }
+
+      .query-prefix {
+        padding: 1rem;
+        font-weight: 700;
+        color: var(--bg-base);
+        background: var(--fg-base);
+        height: 100%;
+        display: flex;
+        align-items: center;
+        font-style: italic;
+      }
+
+      #search {
+        flex: 1;
+        background: transparent;
+        border: none;
+        color: var(--fg-base);
+        font-family: inherit;
+        font-size: 1.25rem;
+        padding: 1rem;
+        outline: none;
+        width: 100%;
+      }
+
+      #search::placeholder {
+        opacity: 0.3;
+      }
+
+      .array-module {
+        grid-column: 2 / 5;
+        grid-row: 8 / 13;
+        display: flex;
+        flex-direction: column;
+        border: 1px solid var(--grid-major);
+        border-bottom: none;
+        height: fit-content;
+        margin-top: 1.5rem;
+      }
+
+      .array-module .link {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        background: var(--bg-base);
+        color: var(--fg-base);
+        text-decoration: none;
+        padding: 0.75rem 1rem;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        font-weight: 400;
+        width: 100%;
+        border-bottom: 1px solid var(--grid-major);
+      }
+
+      .array-module .link svg {
+        width: 18px;
+        height: 18px;
+        stroke: var(--fg-base);
+        stroke-width: 2;
+        fill: none;
+      }
+
+      .array-module .link:hover {
+        background: var(--fg-base);
+        color: var(--bg-base);
+      }
+
+      .array-module .link:hover svg {
+        stroke: var(--bg-base);
+      }
+
+      .btn-settings {
+        position: fixed;
+        bottom: calc(2rem - 20px);
+        right: 2rem;
+        z-index: 100;
+        background: var(--bg-base);
+        border: 1px solid var(--fg-base);
+        color: var(--fg-base);
+        padding: 0.5rem 1rem;
+        font-family: inherit;
+        font-size: 0.75rem;
+        font-weight: 700;
+        cursor: pointer;
+        pointer-events: auto;
+      }
+
+      .btn-settings:hover {
+        background: var(--fg-base);
+        color: var(--bg-base);
+      }
+
+      @media (max-width: 1024px) {
+        .ui-layer {
+          display: flex;
+          flex-direction: column;
+          padding: 2rem;
+          gap: 2rem;
+          overflow-y: auto;
+        }
+        .metrics-cluster,
+        .query-module,
+        .array-module {
+          grid-column: auto;
+          grid-row: auto;
+        }
+        .character-layer {
+          opacity: 0.3;
+        }
+        .equation-loop-container {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="equation-loop-container">
+      <div id="equation-loop"></div>
+    </div>
+
+    <div class="character-layer" aria-hidden="true"></div>
+
+    <main class="ui-layer">
+      <div class="metrics-cluster interactive-zone">
+        <div id="greeting">GIVEN: USER</div>
+        <div id="clock">00:00</div>
+
+        <div class="data-vector">
+          <div>
+            <div class="data-label">Set [Date]</div>
+            <div id="date">YYYY.MM.DD</div>
+          </div>
+          <div>
+            <div class="data-label">Var [weather]</div>
+            <div id="weather">--°C</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="query-module interactive-zone">
+        <div class="query-prefix">f(x) =</div>
+        <input
+          id="search"
+          type="search"
+          placeholder="search.."
+          autocomplete="off"
+          autofocus        />
+      </div>
+
+      <nav class="array-module interactive-zone" id="links"></nav>
+    </main>
+
+    <button class="btn-settings" aria-label="Settings">[ CFG ]</button>
+
+    <script src="../js/core.js"></script>
+    <script src="../js/settings.js"></script>
+  </body>
+</html>

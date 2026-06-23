@@ -1,0 +1,293 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Kanbaru - Monogatari Start Page</title>
+    <link rel="manifest" href="../manifest.json" />
+    <meta name="theme-color" content="#f3722c" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;900&display=swap"
+      rel="stylesheet"
+    />
+
+    <script src="../js/theme-init.js"></script>
+
+    <style>
+      :root {
+        --accent-color: #f3722c;
+        --text-main: #ffffff;
+        --text-muted: rgba(255, 255, 255, 0.6);
+        --panel-bg: rgba(255, 255, 255, 0.05);
+        --panel-border: rgba(255, 255, 255, 0.1);
+        --panel-hover: rgba(255, 255, 255, 0.15);
+        --bg-filter: none;
+        --font-main: "Montserrat", sans-serif;
+        --transition-speed: 0.3s;
+      }
+
+      [data-theme="dark"] {
+        --accent-color: #d90429;
+        --text-main: #e0e0e0;
+        --text-muted: rgba(255, 255, 255, 0.4);
+        --panel-bg: rgba(0, 0, 0, 0.6);
+        --panel-border: rgba(217, 4, 41, 0.3);
+        --panel-hover: rgba(217, 4, 41, 0.15);
+        --bg-filter: grayscale(100%) brightness(30%) sepia(100%)
+          hue-rotate(315deg) saturate(250%);
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: var(--font-main);
+        background-color: #000;
+        color: var(--text-main);
+        height: 100vh;
+        overflow: hidden;
+      }
+
+      #bg-layer {
+        position: absolute;
+        inset: 0;
+        background-image: url("../assets/images/suruga.png");
+        background-size: cover;
+        background-position: center;
+        z-index: -1;
+        transition: filter var(--transition-speed) ease;
+        filter: var(--bg-filter);
+      }
+
+      .layout {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        height: 100vh;
+        padding: 40px 5vw;
+      }
+
+      .sidebar {
+        width: 100%;
+        max-width: 420px;
+        display: flex;
+        flex-direction: column;
+        gap: 40px;
+        z-index: 10;
+      }
+
+      .header-block {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+      }
+
+      .greeting {
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        color: var(--accent-color);
+      }
+
+      .clock {
+        font-size: 6rem;
+        font-weight: 900;
+        line-height: 0.9;
+        letter-spacing: -2px;
+      }
+
+      .meta-data {
+        display: flex;
+        gap: 20px;
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--text-muted);
+        margin-top: 10px;
+      }
+
+      .meta-data span {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      #weather {
+        color: var(--text-main);
+      }
+
+      .search-container {
+        position: relative;
+        width: 100%;
+      }
+
+      .search-input {
+        width: 100%;
+        background: var(--panel-bg);
+        border: 1px solid var(--panel-border);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        padding: 20px 24px;
+        font-family: var(--font-main);
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: var(--text-main);
+        outline: none;
+        border-radius: 8px;
+        transition: all var(--transition-speed) ease;
+      }
+
+      .search-input::placeholder {
+        color: var(--text-muted);
+      }
+
+      .search-input:focus {
+        border-color: var(--accent-color);
+        background: var(--panel-hover);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      }
+
+      .links-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+      }
+
+      .shortcut {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 16px;
+        background: var(--panel-bg);
+        border: 1px solid var(--panel-border);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border-radius: 8px;
+        color: var(--text-main);
+        text-decoration: none;
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.2s ease;
+      }
+
+      .shortcut svg {
+        width: 20px;
+        height: 20px;
+        stroke: var(--accent-color);
+        stroke-width: 2.5;
+        fill: none;
+        transition: stroke 0.2s ease;
+      }
+
+      .shortcut:hover {
+        background: var(--panel-hover);
+        border-color: var(--accent-color);
+        transform: translateY(-2px);
+      }
+
+      .shortcut:hover svg {
+        stroke: var(--text-main);
+      }
+
+      .btn-settings {
+        position: fixed;
+        bottom: 40px;
+        right: 5vw;
+        width: 50px;
+        height: 50px;
+        background: var(--panel-bg);
+        border: 1px solid var(--panel-border);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 100;
+        transition: all 0.2s ease;
+      }
+
+      .btn-settings svg {
+        width: 20px;
+        height: 20px;
+        stroke: var(--text-muted);
+        stroke-width: 2.5;
+        fill: none;
+        transition: all 0.3s ease;
+      }
+
+      .btn-settings:hover {
+        background: var(--panel-hover);
+        border-color: var(--accent-color);
+      }
+
+      .btn-settings:hover svg {
+        stroke: var(--accent-color);
+        transform: rotate(90deg);
+      }
+
+      @media (max-width: 1024px) {
+        .layout {
+          justify-content: center;
+          align-items: flex-end;
+          padding-bottom: 100px;
+        }
+        .sidebar {
+          max-width: 100%;
+          background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
+          padding: 20px;
+          border-radius: 12px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="bg-layer"></div>
+
+    <main class="layout">
+      <aside class="sidebar">
+        <div class="header-block">
+          <div class="greeting" id="greeting-box"></div>
+          <div class="clock" id="clock">00:00</div>
+          <div class="meta-data">
+            <span id="date">YYYY.MM.DD</span>
+            <span id="weather">--°C</span>
+          </div>
+        </div>
+
+        <div class="search-container">
+          <input
+            id="search"
+            class="search-input"
+            type="search"
+            placeholder="Search..."
+            autocomplete="off"
+            autofocus
+          />
+        </div>
+
+        <nav class="links-grid" id="links"></nav>
+      </aside>
+    </main>
+
+    <button class="btn-settings" aria-label="Settings">
+      <svg viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="3"></circle>
+        <path
+          d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"
+        ></path>
+      </svg>
+    </button>
+
+    <script src="../js/core.js"></script>
+    <script src="../js/settings.js"></script>
+  </body>
+</html>

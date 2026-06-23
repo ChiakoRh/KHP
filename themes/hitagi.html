@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Hitagi - Monogatari Start Page</title>
+    <link rel="manifest" href="../manifest.json" />
+    <meta name="theme-color" content="#614b79" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;500;900&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      :root {
+        --senjou-violet: #614b79;
+        --senjou-dark: #140d1c;
+        --senjou-crimson: #a61c1c;
+        --senjou-white: #f0eef5;
+        --ui-border: 1px solid rgba(240, 238, 245, 0.3);
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: "Noto Serif JP", serif;
+        color: var(--senjou-white);
+        height: 100vh;
+        overflow: hidden;
+        background-color: var(--senjou-dark);
+        -webkit-font-smoothing: antialiased;
+      }
+
+      .media-bg {
+        position: fixed;
+        inset: 0;
+        z-index: -2;
+        background-image: url("../assets/images/hitagi.png");
+        background-size: cover;
+        background-position: center;
+      }
+
+      .media-bg video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        opacity: 0.8;
+        filter: contrast(1.1) brightness(0.8);
+      }
+
+      .vignette {
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        pointer-events: none;
+        background:
+          radial-gradient(
+            circle at center,
+            transparent 0%,
+            var(--senjou-dark) 160%
+          ),
+          linear-gradient(90deg, rgba(20, 13, 28, 0.85) 0%, transparent 40%);
+      }
+
+      /* Dream overlay - keeps the dreamy feel without lines */
+      .dream-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        pointer-events: none;
+        background:
+          radial-gradient(
+            ellipse at 15% 90%,
+            rgba(166, 28, 28, 0.15) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            ellipse at 85% 10%,
+            rgba(97, 75, 121, 0.2) 0%,
+            transparent 50%
+          );
+        animation: dreamPulse 7s ease-in-out infinite;
+      }
+
+      @keyframes dreamPulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.6;
+        }
+      }
+
+      /* REMOVED: Film grain overlay (the noise) */
+      /* REMOVED: Halation overlay (the scanlines/lines over the video) */
+
+      .particle {
+        position: absolute;
+        bottom: -20px;
+        width: 2px;
+        height: 15px;
+        background: var(--senjou-white);
+        opacity: 0.2;
+        z-index: 0;
+        animation: floatUp linear infinite;
+      }
+
+      @keyframes floatUp {
+        to {
+          transform: translateY(-105vh) rotate(360deg);
+          opacity: 0;
+        }
+      }
+
+      .container {
+        position: relative;
+        z-index: 10;
+        display: flex;
+        justify-content: space-between;
+        height: 100%;
+        padding: 60px;
+        gap: 60px;
+        animation: subtleFloat 8s ease-in-out infinite;
+      }
+
+      @keyframes subtleFloat {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-8px); }
+      }
+
+      .vertical-panel {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: flex-start;
+        border-left: 2px solid var(--senjou-crimson);
+        height: 100%;
+        backdrop-filter: blur(4px);
+        background: rgba(20, 13, 28, 0.4);
+        padding: 40px 20px;
+        flex-shrink: 0;
+      }
+
+      .title {
+        writing-mode: vertical-rl;
+        text-orientation: upright;
+        font-size: 28px;
+        font-weight: 900;
+        letter-spacing: 0.3em;
+        color: var(--senjou-white);
+      }
+
+      .title span {
+        color: var(--senjou-crimson);
+        font-size: 16px;
+        margin-top: 20px;
+        display: block;
+      }
+
+      .time {
+        font-size: 72px;
+        font-weight: 300;
+        line-height: 0.8;
+        letter-spacing: 2px;
+      }
+      .date {
+        font-size: 14px;
+        font-weight: 500;
+        letter-spacing: 4px;
+        text-transform: uppercase;
+        color: var(--senjou-violet);
+        margin-top: 10px;
+      }
+      .weather {
+        font-size: 18px;
+        font-weight: 500;
+        letter-spacing: 2px;
+        margin-top: 20px;
+      }
+
+      .interaction-panel {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        align-items: flex-end;
+        flex: 1;
+        max-width: 520px;
+        margin-left: auto;
+      }
+
+      .search-container {
+        position: relative;
+        margin-bottom: 32px;
+        width: 100%;
+      }
+
+      .search-container::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 10px;
+        height: 10px;
+        border-left: 2px solid var(--senjou-crimson);
+        border-bottom: 2px solid var(--senjou-crimson);
+        transition: width 0.3s ease;
+      }
+
+      .search-container:focus-within::before {
+        width: 100%;
+      }
+
+      .search {
+        width: 100%;
+        background: transparent;
+        border: none;
+        border-bottom: var(--ui-border);
+        color: var(--senjou-white);
+        font-family: inherit;
+        font-size: 24px;
+        font-weight: 300;
+        padding: 15px 0;
+        outline: none;
+        letter-spacing: 1px;
+        text-align: right;
+      }
+
+      .search::placeholder {
+        color: rgba(240, 238, 245, 0.35);
+      }
+
+      .links {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1px;
+        background: rgba(240, 238, 245, 0.2);
+        border: var(--ui-border);
+        width: 100%;
+      }
+
+      .link {
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 20px;
+        background: var(--senjou-dark);
+        color: var(--senjou-white);
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 500;
+        letter-spacing: 1px;
+        overflow: hidden;
+        transition: color 0.12s;
+      }
+
+      .link::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: var(--senjou-crimson);
+        transition: transform 0.15s cubic-bezier(0.1, 0.9, 0.2, 1);
+        z-index: 0;
+      }
+
+      .link:hover::before {
+        transform: translateX(100%);
+      }
+      .link:hover {
+        color: var(--senjou-white);
+      }
+
+      .link span,
+      .link svg {
+        position: relative;
+        z-index: 1;
+      }
+
+      .icon {
+        width: 18px;
+        height: 18px;
+        stroke: currentColor;
+        stroke-width: 2;
+        fill: none;
+        flex-shrink: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="media-bg">
+      <video autoplay loop muted playsinline id="bg-video">
+        <source src="../assets/videos/hitagi.mp4" type="video/mp4" />
+      </video>
+    </div>
+
+    <div class="vignette"></div>
+    <div class="dream-overlay"></div>
+    <!-- REMOVED: film-grain div -->
+    <!-- REMOVED: halation div (scanlines) -->
+
+    <div class="container">
+      <div class="vertical-panel">
+        <div class="title">
+          ホームページ
+          <span></span>
+        </div>
+        <div>
+          <div class="time" id="clock">00:00</div>
+          <div class="date" id="date">YYYY.MM.DD</div>
+          <div class="weather" id="weather">--°C</div>
+        </div>
+      </div>
+
+      <div class="interaction-panel">
+        <div class="search-container">
+          <input
+            id="search"
+            class="search"
+            type="search"
+            placeholder="Search..."
+            autocomplete="off"
+            autofocus
+          />
+        </div>
+
+        <nav class="links">
+          <a class="link" id="settings-btn" style="cursor: pointer">
+            <svg class="icon" viewBox="0 0 24 24">
+              <path
+                d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"
+              ></path>
+              <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+            <span>Settings</span>
+          </a>
+        </nav>
+      </div>
+    </div>
+
+    <script src="../js/core.js"></script>
+    <script src="../js/settings.js"></script>
+  </body>
+</html>
