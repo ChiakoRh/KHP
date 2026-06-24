@@ -81,8 +81,6 @@ const wxIcons = {
 
 // Default shortcuts
 const DEFAULT_SHORTCUTS = [
-  { label: "Quercus", url: "https://q.utoronto.ca/", icon: "school", color: "coral" },
-  { label: "Acorn", url: "https://acorn.utoronto.ca/", icon: "book" },
   { label: "YouTube", url: "https://youtube.com", icon: "video", color: "teal" },
   { label: "Archwiki", url: "https://wiki.archlinux.org/", icon: "terminal" },
   { label: "Outlook", url: "https://outlook.office.com", icon: "mail" },
@@ -164,17 +162,26 @@ function getSearchUrl(query) {
 
 // Jalali (Persian) date conversion
 function toJalali(gy, gm, gd) {
-  const gdm = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334];
-  const gy2 = (gm > 2) ? (gy + 1) : gy;
-  const days = 355666 + (365 * gy) + ~~((gy2 + 3) / 4) - ~~((gy2 + 99) / 100) + ~~((gy2 + 399) / 400) + gd + gdm[gm - 1];
-  const jy = -1595 + (40 * ~~(days / 14697));
-  let days2 = days - 14697 * ~~(days / 14697);
-  if (days2 > 102) {
-    const jm = Math.min(6, ~~((days2 - 102) / 31));
-    return { year: jy + 9 + ~~((days2 - 102) / 366), month: jm + 7, day: days2 - 133 - ~~(jm * 31) + (jm >= 7 ? 30 : 0) };
+  const g_d_m = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334];
+  let jy, jm, jd;
+  let gy2 = gm > 2 ? gy + 1 : gy;
+  let days = 355666 + 365 * gy + Math.floor((gy2 + 3) / 4) - Math.floor((gy2 + 99) / 100) + Math.floor((gy2 + 399) / 400) + gd + g_d_m[gm - 1];
+  jy = -1595 + 33 * Math.floor(days / 12053);
+  days %= 12053;
+  jy += 4 * Math.floor(days / 1461);
+  days %= 1461;
+  if (days > 365) {
+    jy += Math.floor((days - 1) / 365);
+    days = (days - 1) % 365;
   }
-  const jm = Math.min(6, ~~(days2 / 31));
-  return { year: jy + 9, month: jm + 1, day: days2 - ~~(jm * 31) + 1 };
+  if (days < 186) {
+    jm = 1 + Math.floor(days / 31);
+    jd = 1 + days % 31;
+  } else {
+    jm = 7 + Math.floor((days - 186) / 30);
+    jd = 1 + (days - 186) % 30;
+  }
+  return { year: jy, month: jm, day: jd };
 }
 
 function formatJalali(date) {
@@ -565,7 +572,20 @@ function initMayoiTheme() {
 function initTsukihiTheme() {
   const SHAPE_4 = "M32.0,2.0L34.3,2.3L36.5,3.3L38.5,4.8L40.2,6.8L41.6,8.9L42.6,11.1L43.5,13.2L44.3,15.0L45.1,16.6L46.1,17.9L47.4,18.9L49.0,19.7L50.8,20.5L52.9,21.4L55.1,22.4L57.2,23.8L59.2,25.5L60.7,27.5L61.7,29.7L62.0,32.0L61.7,34.3L60.7,36.5L59.2,38.5L57.2,40.2L55.1,41.6L52.9,42.6L50.8,43.5L49.0,44.3L47.4,45.1L46.1,46.1L45.1,47.4L44.3,49.0L43.5,50.8L42.6,52.9L41.6,55.1L40.2,57.2L38.5,59.2L36.5,60.7L34.3,61.7L32.0,62.0L29.7,61.7L27.5,60.7L25.5,59.2L23.8,57.2L22.4,55.1L21.4,52.9L20.5,50.8L19.7,49.0L18.9,47.4L17.9,46.1L16.6,45.1L15.0,44.3L13.2,43.5L11.1,42.6L8.9,41.6L6.8,40.2L4.8,38.5L3.3,36.5L2.3,34.3L2.0,32.0L2.3,29.7L3.3,27.5L4.8,25.5L6.8,23.8L8.9,22.4L11.1,21.4L13.2,20.5L15.0,19.7L16.6,18.9L17.9,17.9L18.9,16.6L19.7,15.0L20.5,13.2L21.4,11.1L22.4,8.9L23.8,6.8L25.5,4.8L27.5,3.3L29.7,2.3Z";
   const SHAPE_6 = "M32.0,10.0L33.8,9.7L35.7,8.8L37.8,7.7L40.2,6.7L42.7,6.2L45.1,6.3L47.1,7.3L48.7,9.1L49.6,11.4L50.0,14.0L50.2,16.5L50.3,18.7L50.8,20.5L51.8,21.9L53.3,23.2L55.2,24.5L57.3,25.9L59.2,27.7L60.5,29.8L61.0,32.0L60.5,34.2L59.2,36.3L57.3,38.1L55.2,39.5L53.3,40.8L51.8,42.1L50.8,43.5L50.3,45.3L50.2,47.5L50.0,50.0L49.6,52.6L48.7,54.9L47.1,56.7L45.1,57.7L42.7,57.8L40.2,57.3L37.8,56.3L35.7,55.2L33.8,54.3L32.0,54.0L30.2,54.3L28.3,55.2L26.2,56.3L23.8,57.3L21.3,57.8L18.9,57.7L16.9,56.7L15.3,54.9L14.4,52.6L14.0,50.0L13.8,47.5L13.7,45.3L13.2,43.5L12.2,42.1L10.7,40.8L8.8,39.5L6.7,38.1L4.8,36.3L3.5,34.2L3.0,32.0L3.5,29.8L4.8,27.7L6.7,25.9L8.8,24.5L10.7,23.2L12.2,21.9L13.2,20.5L13.7,18.7L13.8,16.5L14.0,14.0L14.4,11.4L15.3,9.1L16.9,7.3L18.9,6.3L21.3,6.2L23.8,6.7L26.2,7.7L28.3,8.8L30.2,9.7Z";
-  
+
+  // Update greeting with actual username
+  const greetingEl = document.getElementById("greeting");
+  if (greetingEl) {
+    const hour = new Date().getHours();
+    const username = window.state?.config?.username || "user";
+    let text;
+    if (hour >= 5 && hour < 12) text = `good morning, ${username}.`;
+    else if (hour >= 12 && hour < 17) text = `good afternoon, ${username}.`;
+    else if (hour >= 17 && hour < 22) text = `good evening, ${username}.`;
+    else text = `still up, ${username}?`;
+    greetingEl.textContent = text;
+  }
+
   const shapePath = document.querySelector(".settings-btn .btn-shape path");
   if (shapePath) {
     shapePath.setAttribute("d", SHAPE_4);
@@ -575,7 +595,7 @@ function initTsukihiTheme() {
       btn.addEventListener("mouseleave", () => shapePath.setAttribute("d", SHAPE_4));
     }
   }
-  
+
   const createRipple = (event) => {
     const el = event.currentTarget;
     const diameter = Math.max(el.clientWidth, el.clientHeight);

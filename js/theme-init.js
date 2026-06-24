@@ -46,8 +46,6 @@
         location: DEFAULT_LOCATION,
         searchEngine: "google",
         shortcuts: [
-          { label: "Quercus", url: "https://q.utoronto.ca/", icon: "school", color: "coral" },
-          { label: "Acorn", url: "https://acorn.utoronto.ca/", icon: "book" },
           { label: "YouTube", url: "https://youtube.com", icon: "video", color: "teal" },
           { label: "Archwiki", url: "https://wiki.archlinux.org/", icon: "terminal" },
           { label: "Outlook", url: "https://outlook.office.com", icon: "mail" }
