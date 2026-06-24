@@ -740,10 +740,14 @@ function registerServiceWorker() {
     console.log('[SW] Service Worker not supported in this browser');
     return;
   }
+
+  // Determine correct SW path based on current page location
+  const isSubdir = window.location.pathname.includes('/themes/');
+  const swPath = isSubdir ? '../sw.js' : 'sw.js';
   
   // Wait for page to fully load before registering
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('sw.js')
+    navigator.serviceWorker.register(swPath)
       .then((registration) => {
         console.log('[SW] Service Worker registered successfully:', registration.scope);
         
